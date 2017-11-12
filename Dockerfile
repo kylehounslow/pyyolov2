@@ -2,10 +2,10 @@ FROM dymat/opencv:cuda
 # get latest pyyolov2 code and yolo model weights
 RUN apt-get update
 RUN apt-get install -y git
-RUN git clone https://github.com/kylehounslow/pyyolov2.git /home
-RUN mkdir -p /home/pyyolov2/model
-RUN cd /home/pyyolov2/model
+RUN git clone https://github.com/kylehounslow/pyyolov2.git /home/pyyolov2
+# download the model
 run apt-get install -y wget
-RUN wget https://pjreddie.com/media/files/yolo.weights
+RUN mkdir -p /home/pyyolov2/model
+RUN wget -P /home/pyyolov2/model https://pjreddie.com/media/files/yolo.weights
 # add pyyolov2.so and libcudnn.so.5 to library path
-RUN LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/python/lib"
+RUN cp /home/pyyolov2/python/lib/* /usr/local/nvidia/lib64
