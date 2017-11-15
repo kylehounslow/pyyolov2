@@ -126,7 +126,7 @@ def get_show_results(threshold, inputQueue, outputQueue):
 
         cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(30) & 0xFF
-
+        print(" I am here")
         if key == 27:
             break
 
