@@ -133,16 +133,16 @@ def get_show_results(threshold, frame_conn, inputQueue):
 def demo_multi(gpu_index=0, cam_index=0):
     from multiprocessing import Process
     from multiprocessing import Queue, Pipe
-    frame_conn = Pipe()
+    parent_conn, child_con = Pipe()
     outputQueue = Queue(maxsize=1)
     threshold = 40
-    p = Process(target=get_show_results, args=(threshold, frame_conn, outputQueue,))
+    p = Process(target=get_show_results, args=(threshold, child_con, outputQueue,))
     p.daemon = True
     p.start()
 
     yolo = PyYoloV2(gpu_index=gpu_index)
     while True:
-        frame = frame_conn.recv()
+        frame = parent_conn.recv()
         # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         if frame is not None:
             detections = yolo.detect(img=frame, thresh=float(threshold) / 100)
