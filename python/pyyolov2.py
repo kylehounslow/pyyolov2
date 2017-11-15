@@ -116,7 +116,7 @@ def demo(gpu_index=0, cam_index=0):
             cv2.rectangle(img, det.p1, det.p2, det.color, 4)
             cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
 
-        img = cv2.resize(img, (1280, 720))  # resize bigger for larger demo screen
+        img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
 
         cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(1) & 0xFF
