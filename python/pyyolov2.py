@@ -93,47 +93,27 @@ def classify_frame(net, inputQueue, outputQueue):
         if not inputQueue.empty():
             # grab the frame from the input queue, resize it, and
             # construct a blob from it
-            threshold=40
+            threshold = 40
             img = inputQueue.get()
             detections = net.detect(img=img, thresh=float(threshold) / 100)
 
             # write the detections to the output queue
             outputQueue.put(detections)
 
-def demo_multi(gpu_index=0, cam_index=0):
-    from multiprocessing import Process
-    from multiprocessing import Queue
-    inputQueue = Queue(maxsize=1)
-    outputQueue = Queue(maxsize=1)
+
+def get_show_results(vc, inputQueue, outputQueue):
     detections = None
-    yolo = PyYoloV2(gpu_index=gpu_index)
-    p = Process(target=classify_frame, args=(yolo, inputQueue,
-                                             outputQueue,))
-    p.daemon = True
-    p.start()
-
-    threshold = 40
-    vc = cv2.VideoCapture()
-    vc.open(cam_index)
-    cv2.namedWindow('PYYOLOV2')
-
-    cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
-    vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
     while True:
-
-        # img = cv2.imread('/home/kyle/Pictures/cantest/54c4155c4793.jpg')
         _, img = vc.read()
-        inputQueue.put(img)
-        detections = outputQueue.get()
-        # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
-        detections = yolo.detect(img=img, thresh=float(threshold) / 100)
-        for det in detections:
-            cv2.rectangle(img, det.p1, det.p2, det.color, 4)
-            # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
-            cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 125, det.y1), det.color, -1)
-            cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
+        outputQueue.put(img)
+        if not inputQueue.empty():
+            detections = inputQueue.get()
+        if detections is not None:
+            for det in detections:
+                cv2.rectangle(img, det.p1, det.p2, det.color, 4)
+                # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
+                cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 125, det.y1), det.color, -1)
+                cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
 
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
 
@@ -142,6 +122,33 @@ def demo_multi(gpu_index=0, cam_index=0):
 
         if key == 27:
             break
+
+
+def demo_multi(gpu_index=0, cam_index=0):
+    from multiprocessing import Process
+    from multiprocessing import Queue
+    inputQueue = Queue(maxsize=1)
+    outputQueue = Queue(maxsize=1)
+    threshold = 40
+    vc = cv2.VideoCapture()
+    vc.open(cam_index)
+    cv2.namedWindow('PYYOLOV2')
+
+    cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
+    vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    p = Process(target=get_show_results, args=(vc, inputQueue,
+                                               outputQueue,))
+    p.daemon = True
+    p.start()
+
+    yolo = PyYoloV2(gpu_index=gpu_index)
+    while True:
+        # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
+        img = inputQueue.get()
+        detections = yolo.detect(img=img, thresh=float(threshold) / 100)
+        outputQueue.put(detections)
+
 
 def demo(gpu_index=0, cam_index=0):
     yolo = PyYoloV2(gpu_index=gpu_index)
@@ -190,5 +197,3 @@ if __name__ == '__main__':
         output_video = sys.argv[3]
         print('argv[3]={}'.format(sys.argv[3]))
     demo(gpu_index=gpu_index, cam_index=cam_index)
-
-
