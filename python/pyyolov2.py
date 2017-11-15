@@ -113,7 +113,7 @@ def get_show_results(threshold, inputQueue, outputQueue):
     while True:
         _, img = vc.read()
         print('before oq')
-        outputQueue.put(img)
+        outputQueue.put_nowait(img)
         print('after oq')
         # if not inputQueue.empty():
         #     detections = inputQueue.get()
@@ -137,7 +137,7 @@ def demo_multi(gpu_index=0, cam_index=0):
     from multiprocessing import Process
     from multiprocessing import Queue
     inputQueue = Queue(maxsize=1)
-    outputQueue = Queue(maxsize=1)
+    outputQueue = Queue(maxsize=1).
     threshold = 40
     p = Process(target=get_show_results, args=(threshold, inputQueue,
                                                outputQueue,))
