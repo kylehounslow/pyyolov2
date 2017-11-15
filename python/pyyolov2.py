@@ -98,15 +98,8 @@ def on_change(num):
 
 def demo(gpu_index=0, video_file=0):
     threshold = 40
-
-    # vc = cv2.VideoCapture('rtsp://admin:Istuary1127@10.0.80.7/cam/realmonitor?channel=1&subtype=2')
-    # vc = cv2.VideoCapture('rtsp://admin:istuary1125@10.0.80.13')
-    # vc = cv2.VideoCapture('/home/kyle/Downloads/TownCentreXVID.avi')
     vc = cv2.VideoCapture()
-    vc.open(0)
-    # vc = cv2.VideoCapture('/home/kyle/Videos/ped_over_hood.mp4')
-    #     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    #     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    vc.open(video_file)
     yolo = PyYoloV2(gpu_index=gpu_index)
     cv2.namedWindow('img')
     cv2.createTrackbar('treshold', 'img', threshold, 100, on_change)
@@ -131,24 +124,6 @@ def demo(gpu_index=0, video_file=0):
             break
 
 
-def try_with_img_folder():
-    import glob
-    yolo = PyYoloV2()
-    cv2.namedWindow('img')
-    threshold = 40
-    cv2.createTrackbar('treshold', 'img', threshold, 100, on_change)
-    image_paths = glob.glob('/home/kyle/Pictures/cantest/*.jpg') + glob.glob('/home/kyle/Pictures/cantest/*.png')
-    for image_path in image_paths:
-        img = cv2.imread(image_path)
-        detections = yolo.detect(img=img, thresh=float(threshold) / 100)
-        for det in detections:
-            cv2.rectangle(img, det.p1, det.p2, det.color, 4)
-            cv2.putText(img, det.class_name, (det.x1, det.y1 - 5), 1, 1.2, det.color, 2)
-        img = cv2.resize(img, (1280, 720))  # resize to fit on screen
-        cv2.imshow('img', img)
-        key = cv2.waitKey(0) & 0xFF
-
-
 if __name__ == '__main__':
     import sys
     args = sys.argv
@@ -161,4 +136,3 @@ if __name__ == '__main__':
         video_file=sys.argv[2]
         print('argv[2]={}'.format(sys.argv[2]))
     demo(gpu_index=gpu_index, video_file=video_file)
-    # try_with_img_folder()
