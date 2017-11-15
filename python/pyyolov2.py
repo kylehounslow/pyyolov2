@@ -113,14 +113,14 @@ def get_show_results(threshold, inputQueue, outputQueue):
     while True:
         _, img = vc.read()
         outputQueue.put(img)
-        if not inputQueue.empty():
-            detections = inputQueue.get()
-        if detections is not None:
-            for det in detections:
-                cv2.rectangle(img, det.p1, det.p2, det.color, 4)
-                # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
-                cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 125, det.y1), det.color, -1)
-                cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
+        # if not inputQueue.empty():
+        #     detections = inputQueue.get()
+        # if detections is not None:
+        #     for det in detections:
+        #         cv2.rectangle(img, det.p1, det.p2, det.color, 4)
+        #         # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
+        #         cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 125, det.y1), det.color, -1)
+        #         cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
 
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
 
