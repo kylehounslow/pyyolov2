@@ -49,7 +49,7 @@ class PyYoloV2(object):
         for cls in self.class_names:
             self.class_colors.append(tuple(np.random.randint(0, 255, 3)))
 
-        self.c_prog.set_gpu_index(gpu_index) # must set cuda device BEFORE loading net.
+        self.c_prog.set_gpu_index(gpu_index)  # must set cuda device BEFORE loading net.
         self.load_net()
 
     def load_net(self):
@@ -92,19 +92,23 @@ def rtsp_test():
 
 # rtsp_test()
 
-def on_change(num):
-    pass
 
 
-def demo(gpu_index=0, video_file=0):
+
+def demo(gpu_index=0, input_video=0):
     threshold = 40
     vc = cv2.VideoCapture()
-    vc.open(video_file)
+    vc.open(input_video)
     yolo = PyYoloV2(gpu_index=gpu_index)
     cv2.namedWindow('img')
+
+    def on_change(num):
+        pass
+
     cv2.createTrackbar('treshold', 'img', threshold, 100, on_change)
     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
     while True:
 
         # img = cv2.imread('/home/kyle/Pictures/cantest/54c4155c4793.jpg')
@@ -126,13 +130,17 @@ def demo(gpu_index=0, video_file=0):
 
 if __name__ == '__main__':
     import sys
+
     args = sys.argv
     gpu_index = 0
-    video_file = 0
+    input_video = 0
     if len(sys.argv) > 1:
         gpu_index = int(sys.argv[1])
         print('argv[1]={}'.format(sys.argv[1]))
     if len(sys.argv) > 2:
-        video_file=sys.argv[2]
+        input_video = sys.argv[2]
         print('argv[2]={}'.format(sys.argv[2]))
-    demo(gpu_index=gpu_index, video_file=video_file)
+    if len(sys.argv) > 3:
+        output_video = sys.argv[2]
+        print('argv[3]={}'.format(sys.argv[3]))
+    demo(gpu_index=gpu_index, input_video=input_video)
