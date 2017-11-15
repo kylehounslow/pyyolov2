@@ -102,7 +102,7 @@ def demo(gpu_index=0, cam_index=0):
     yolo = PyYoloV2(gpu_index=gpu_index)
     cv2.namedWindow('PYYOLOV2')
 
-    cv2.createTrackbar('treshold', 'img', threshold, 100, on_change)
+    cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
