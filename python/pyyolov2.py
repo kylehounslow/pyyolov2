@@ -127,8 +127,8 @@ def get_show_results(threshold, inputQueue, outputQueue):
         cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(30) & 0xFF
         print(" I am here")
-        if key == 27:
-            break
+        # if key == 27:
+        #     break
 
 
 def demo_multi(gpu_index=0, cam_index=0):
@@ -145,10 +145,10 @@ def demo_multi(gpu_index=0, cam_index=0):
     yolo = PyYoloV2(gpu_index=gpu_index)
     while True:
         # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
-        img = inputQueue.get()
-        detections = yolo.detect(img=img, thresh=float(threshold) / 100)
-        outputQueue.put(detections)
-
+        # img = inputQueue.get()
+        # detections = yolo.detect(img=img, thresh=float(threshold) / 100)
+        # outputQueue.put(detections)
+        pass
 
 def demo(gpu_index=0, cam_index=0):
     yolo = PyYoloV2(gpu_index=gpu_index)
