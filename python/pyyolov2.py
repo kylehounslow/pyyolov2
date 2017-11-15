@@ -112,7 +112,9 @@ def get_show_results(threshold, inputQueue, outputQueue):
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     while True:
         _, img = vc.read()
+        print('before oq')
         outputQueue.put(img)
+        print('after oq')
         # if not inputQueue.empty():
         #     detections = inputQueue.get()
         # if detections is not None:
@@ -127,8 +129,8 @@ def get_show_results(threshold, inputQueue, outputQueue):
         cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(30) & 0xFF
         print(" I am here")
-        # if key == 27:
-        #     break
+        if key == 27:
+            break
 
 
 def demo_multi(gpu_index=0, cam_index=0):
