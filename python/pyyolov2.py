@@ -91,8 +91,8 @@ def rtsp_test():
 
 
 # rtsp_test()
-
-
+def on_change(num):
+    pass
 
 
 def demo(gpu_index=0, cam_index=0):
@@ -101,9 +101,6 @@ def demo(gpu_index=0, cam_index=0):
     vc.open(cam_index)
     yolo = PyYoloV2(gpu_index=gpu_index)
     cv2.namedWindow('PYYOLOV2')
-
-    def on_change(num):
-        pass
 
     cv2.createTrackbar('treshold', 'img', threshold, 100, on_change)
     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
