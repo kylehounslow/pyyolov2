@@ -101,8 +101,15 @@ def classify_frame(net, inputQueue, outputQueue):
             outputQueue.put(detections)
 
 
-def get_show_results(vc, inputQueue, outputQueue):
+def get_show_results(threshold, inputQueue, outputQueue):
     detections = None
+    vc = cv2.VideoCapture()
+    vc.open(cam_index)
+    cv2.namedWindow('PYYOLOV2')
+
+    cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
+    vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     while True:
         _, img = vc.read()
         outputQueue.put(img)
@@ -130,14 +137,7 @@ def demo_multi(gpu_index=0, cam_index=0):
     inputQueue = Queue(maxsize=1)
     outputQueue = Queue(maxsize=1)
     threshold = 40
-    vc = cv2.VideoCapture()
-    vc.open(cam_index)
-    cv2.namedWindow('PYYOLOV2')
-
-    cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
-    vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    p = Process(target=get_show_results, args=(vc, inputQueue,
+    p = Process(target=get_show_results, args=(threshold, inputQueue,
                                                outputQueue,))
     p.daemon = True
     p.start()
