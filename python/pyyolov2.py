@@ -86,6 +86,20 @@ def on_change(num):
     pass
 
 
+def classify_frame(net, inputQueue, outputQueue):
+    # keep looping
+    while True:
+        # check to see if there is a frame in our input queue
+        if not inputQueue.empty():
+            # grab the frame from the input queue, resize it, and
+            # construct a blob from it
+            threshold=40
+            img = inputQueue.get()
+            detections = net.detect(img=img, thresh=float(threshold) / 100)
+
+            # write the detections to the output queue
+            outputQueue.put(detections)
+
 def demo(gpu_index=0, cam_index=0):
     from multiprocessing import Process
     from multiprocessing import Queue
@@ -148,16 +162,3 @@ if __name__ == '__main__':
     demo(gpu_index=gpu_index, cam_index=cam_index)
 
 
-def classify_frame(net, inputQueue, outputQueue):
-    # keep looping
-    while True:
-        # check to see if there is a frame in our input queue
-        if not inputQueue.empty():
-            # grab the frame from the input queue, resize it, and
-            # construct a blob from it
-            threshold=40
-            img = inputQueue.get()
-            detections = net.detect(img=img, thresh=float(threshold) / 100)
-
-            # write the detections to the output queue
-            outputQueue.put(detections)
