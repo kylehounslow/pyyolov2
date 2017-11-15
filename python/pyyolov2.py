@@ -138,7 +138,7 @@ if __name__ == '__main__':
         gpu_index = int(sys.argv[1])
         print('gpu_index={}'.format(gpu_index))
     if len(sys.argv) > 2:
-        cam_index = sys.argv[2]
+        cam_index = int(sys.argv[2])
         print('cam_index={}'.format(cam_index))
     if len(sys.argv) > 3:
         output_video = sys.argv[3]
