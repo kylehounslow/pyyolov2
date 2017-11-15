@@ -82,15 +82,6 @@ class PyYoloV2(object):
         return detections
 
 
-def rtsp_test():
-    rtsp_addr = 'rtsp://admin:Istuary1127@10.0.80.7/cam/realmonitor?channel=1&subtype=1'
-    #     rtsp_addr = '/home/kyle/Videos/lasse/ejner_hessel.mp4'
-    rtsp_addr = '/home/kyle/Videos/lasse/lars_hein.mp4'
-    c_prog = ctypes.cdll.LoadLibrary('lib/libpyyolov2.so')
-    c_prog.rtsp_test(rtsp_addr)
-
-
-# rtsp_test()
 def on_change(num):
     pass
 
@@ -115,7 +106,7 @@ def demo(gpu_index=0, cam_index=0):
         for det in detections:
             cv2.rectangle(img, det.p1, det.p2, det.color, 4)
             # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
-            cv2.rectangle(img, (det.x1, det.y1 - 100), (det.x1 + 300, det.y1 - 5), det.color, -1)
+            cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 150, det.y1), det.color, -1)
             cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
 
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
