@@ -126,7 +126,6 @@ def get_show_results(threshold, frame, inputQueue):
 
         cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(30) & 0xFF
-        print(" I am here")
         if key == 27:
             break
 
@@ -138,7 +137,7 @@ def demo_multi(gpu_index=0, cam_index=0):
     outputQueue = Queue(maxsize=1)
     threshold = 40
     frame = None
-    p = Process(target=get_show_results, args=(threshold,frame, inputQueue,))
+    p = Process(target=get_show_results, args=(threshold, frame, outputQueue,))
     p.daemon = True
     p.start()
 
