@@ -116,7 +116,7 @@ def demo(gpu_index=0, cam_index=0):
             cv2.rectangle(img, det.p1, det.p2, det.color, 4)
             # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
             cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255 ,255), 2)
-            cv2.rectangle(img,(det.x1, det.y1 - 5), (det.x1+20, det.y1), det.color,-1)
+            cv2.rectangle(img,(det.x1, det.y1 - 200), (det.x1+300, det.y1 - 5), det.color,-1)
 
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
 
