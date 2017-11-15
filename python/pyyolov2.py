@@ -137,7 +137,7 @@ def demo_multi(gpu_index=0, cam_index=0):
     from multiprocessing import Process
     from multiprocessing import Queue
     inputQueue = Queue(maxsize=1)
-    outputQueue = Queue(maxsize=1).
+    outputQueue = Queue(maxsize=1)
     threshold = 40
     p = Process(target=get_show_results, args=(threshold, inputQueue,
                                                outputQueue,))
