@@ -100,7 +100,7 @@ def demo(gpu_index=0, input_video=0):
     vc = cv2.VideoCapture()
     vc.open(input_video)
     yolo = PyYoloV2(gpu_index=gpu_index)
-    cv2.namedWindow('img')
+    cv2.namedWindow('PYYOLOV2')
 
     def on_change(num):
         pass
@@ -121,7 +121,7 @@ def demo(gpu_index=0, input_video=0):
 
         img = cv2.resize(img, (1280, 720))  # resize bigger for larger demo screen
 
-        cv2.imshow('img', img)
+        cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(1) & 0xFF
 
         if key == 27:
@@ -136,11 +136,11 @@ if __name__ == '__main__':
     input_video = 0
     if len(sys.argv) > 1:
         gpu_index = int(sys.argv[1])
-        print('argv[1]={}'.format(sys.argv[1]))
+        print('gpu_index={}'.format(gpu_index))
     if len(sys.argv) > 2:
         input_video = sys.argv[2]
-        print('argv[2]={}'.format(sys.argv[2]))
+        print('input_video={}'.format(input_video))
     if len(sys.argv) > 3:
-        output_video = sys.argv[2]
+        output_video = sys.argv[3]
         print('argv[3]={}'.format(sys.argv[3]))
     demo(gpu_index=gpu_index, input_video=input_video)
