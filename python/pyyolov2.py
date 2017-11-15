@@ -110,6 +110,8 @@ def get_show_results(threshold, frame_conn, inputQueue):
     cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    vw = cv2.VideoWriter('output.avi', fourcc, 20.0, (1920, 1080))
     while True:
         _, img = vc.read()
         frame_conn.send(img.copy())
@@ -123,10 +125,12 @@ def get_show_results(threshold, frame_conn, inputQueue):
                 cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
 
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
-
+        vw.write(img)
         cv2.imshow('PYYOLOV2', img)
         key = cv2.waitKey(30) & 0xFF
         if key == 27:
+            vw.release()
+            vc.release()
             break
 
 
