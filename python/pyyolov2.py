@@ -101,7 +101,7 @@ def classify_frame(net, inputQueue, outputQueue):
             outputQueue.put(detections)
 
 
-def get_show_results(threshold, inputQueue, outputQueue):
+def get_show_results(threshold, frame, inputQueue):
     detections = None
     vc = cv2.VideoCapture()
     vc.open(cam_index)
@@ -112,17 +112,15 @@ def get_show_results(threshold, inputQueue, outputQueue):
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     while True:
         _, img = vc.read()
-        print('before oq')
-        outputQueue.put_nowait(img)
-        print('after oq')
-        # if not inputQueue.empty():
-        #     detections = inputQueue.get()
-        # if detections is not None:
-        #     for det in detections:
-        #         cv2.rectangle(img, det.p1, det.p2, det.color, 4)
-        #         # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
-        #         cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 125, det.y1), det.color, -1)
-        #         cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
+        frame = img.copy()
+        if not inputQueue.empty():
+            detections = inputQueue.get()
+        if detections is not None:
+            for det in detections:
+                cv2.rectangle(img, det.p1, det.p2, det.color, 4)
+                # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
+                cv2.rectangle(img, (det.x1, det.y1 - 30), (det.x1 + 125, det.y1), det.color, -1)
+                cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, (255, 255, 255), 2)
 
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
 
@@ -139,17 +137,17 @@ def demo_multi(gpu_index=0, cam_index=0):
     inputQueue = Queue(maxsize=1)
     outputQueue = Queue(maxsize=1)
     threshold = 40
-    p = Process(target=get_show_results, args=(threshold, inputQueue,
-                                               outputQueue,))
+    frame = None
+    p = Process(target=get_show_results, args=(threshold,frame, inputQueue,))
     p.daemon = True
     p.start()
 
     yolo = PyYoloV2(gpu_index=gpu_index)
     while True:
         # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
-        # img = inputQueue.get()
-        # detections = yolo.detect(img=img, thresh=float(threshold) / 100)
-        # outputQueue.put(detections)
+        if frame is not None:
+            detections = yolo.detect(img=frame, thresh=float(threshold) / 100)
+            outputQueue.put(detections)
         pass
 
 def demo(gpu_index=0, cam_index=0):
