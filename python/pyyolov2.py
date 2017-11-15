@@ -114,7 +114,7 @@ def demo(gpu_index=0, cam_index=0):
         detections = yolo.detect(img=img, thresh=float(threshold) / 100)
         for det in detections:
             cv2.rectangle(img, det.p1, det.p2, det.color, 4)
-            cv2.putText(img, det.class_name, (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
+            cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
 
         img = cv2.resize(img, (1280, 720))  # resize bigger for larger demo screen
 
