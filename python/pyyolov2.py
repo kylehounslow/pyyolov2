@@ -95,10 +95,10 @@ def rtsp_test():
 
 
 
-def demo(gpu_index=0, input_video=0):
+def demo(gpu_index=0, cam_index=0):
     threshold = 40
     vc = cv2.VideoCapture()
-    vc.open(input_video)
+    vc.open(cam_index)
     yolo = PyYoloV2(gpu_index=gpu_index)
     cv2.namedWindow('PYYOLOV2')
 
@@ -133,14 +133,14 @@ if __name__ == '__main__':
 
     args = sys.argv
     gpu_index = 0
-    input_video = 0
+    cam_index = 0
     if len(sys.argv) > 1:
         gpu_index = int(sys.argv[1])
         print('gpu_index={}'.format(gpu_index))
     if len(sys.argv) > 2:
-        input_video = sys.argv[2]
-        print('input_video={}'.format(input_video))
+        cam_index = sys.argv[2]
+        print('cam_index={}'.format(cam_index))
     if len(sys.argv) > 3:
         output_video = sys.argv[3]
         print('argv[3]={}'.format(sys.argv[3]))
-    demo(gpu_index=gpu_index, input_video=input_video)
+    demo(gpu_index=gpu_index, cam_index=cam_index)
