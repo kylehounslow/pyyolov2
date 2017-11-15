@@ -125,7 +125,7 @@ def get_show_results(threshold, inputQueue, outputQueue):
         img = cv2.resize(img, (1920, 1080))  # resize bigger for larger demo screen
 
         cv2.imshow('PYYOLOV2', img)
-        key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(30) & 0xFF
 
         if key == 27:
             break
