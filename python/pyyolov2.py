@@ -87,10 +87,20 @@ def on_change(num):
 
 
 def demo(gpu_index=0, cam_index=0):
+    from multiprocessing import Process
+    from multiprocessing import Queue
+    inputQueue = Queue(maxsize=1)
+    outputQueue = Queue(maxsize=1)
+    detections = None
+    yolo = PyYoloV2(gpu_index=gpu_index)
+    p = Process(target=classify_frame, args=(yolo, inputQueue,
+                                             outputQueue,))
+    p.daemon = True
+    p.start()
+
     threshold = 40
     vc = cv2.VideoCapture()
     vc.open(cam_index)
-    yolo = PyYoloV2(gpu_index=gpu_index)
     cv2.namedWindow('PYYOLOV2')
 
     cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
@@ -101,8 +111,10 @@ def demo(gpu_index=0, cam_index=0):
 
         # img = cv2.imread('/home/kyle/Pictures/cantest/54c4155c4793.jpg')
         _, img = vc.read()
-        threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
-        detections = yolo.detect(img=img, thresh=float(threshold) / 100)
+        inputQueue.put(img)
+        detections = outputQueue.get()
+        # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
+        # detections = yolo.detect(img=img, thresh=float(threshold) / 100)
         for det in detections:
             cv2.rectangle(img, det.p1, det.p2, det.color, 4)
             # cv2.putText(img, det.class_name.upper(), (det.x1, det.y1 - 5), 1, 1.4, det.color, 2)
@@ -134,3 +146,18 @@ if __name__ == '__main__':
         output_video = sys.argv[3]
         print('argv[3]={}'.format(sys.argv[3]))
     demo(gpu_index=gpu_index, cam_index=cam_index)
+
+
+def classify_frame(net, inputQueue, outputQueue):
+    # keep looping
+    while True:
+        # check to see if there is a frame in our input queue
+        if not inputQueue.empty():
+            # grab the frame from the input queue, resize it, and
+            # construct a blob from it
+            threshold=40
+            img = inputQueue.get()
+            detections = net.detect(img=img, thresh=float(threshold) / 100)
+
+            # write the detections to the output queue
+            outputQueue.put(detections)
