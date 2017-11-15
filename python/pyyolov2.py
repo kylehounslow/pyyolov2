@@ -110,7 +110,7 @@ def demo(gpu_index=0, cam_index=0):
 
         # img = cv2.imread('/home/kyle/Pictures/cantest/54c4155c4793.jpg')
         _, img = vc.read()
-        threshold = cv2.getTrackbarPos('treshold', 'img')
+        threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         detections = yolo.detect(img=img, thresh=float(threshold) / 100)
         for det in detections:
             cv2.rectangle(img, det.p1, det.p2, det.color, 4)
