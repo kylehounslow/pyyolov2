@@ -120,6 +120,7 @@ def get_show_results(frame_conn, inputQueue):
         _, img = vc.read()
         if img is None:
             break
+        threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         frame_conn.send((exit_loop, threshold, img.copy()))
         if not inputQueue.empty():
             detections = inputQueue.get()
@@ -155,7 +156,6 @@ def demo_multi(gpu_index=0, cam_index=0):
     exit_loop = False
     while not exit_loop:
         exit_loop, threshold, frame = parent_conn.recv()
-        # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         if frame is not None:
             detections = yolo.detect(img=frame, thresh=float(threshold) / 100)
             outputQueue.put(detections)
