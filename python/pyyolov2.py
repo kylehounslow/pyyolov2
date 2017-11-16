@@ -110,7 +110,7 @@ def get_show_results(threshold, frame_conn, inputQueue):
     cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    fourcc = cv2.VideoWriter_fourcc(*'X264')
     vw = cv2.VideoWriter('output.avi', fourcc, 20.0, (1920, 1080))
     exit_loop = False
     while True:
