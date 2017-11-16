@@ -101,14 +101,13 @@ def classify_frame(net, inputQueue, outputQueue):
             outputQueue.put(detections)
 
 
-def get_show_results(frame_conn, inputQueue):
-    threshold = 40
+def get_show_results(threshold, frame_conn, inputQueue):
     detections = None
     vc = cv2.VideoCapture()
     vc.open(cam_index)
     cv2.namedWindow('PYYOLOV2')
 
-    cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
+    # cv2.createTrackbar('treshold', 'PYYOLOV2', threshold, 100, on_change)
     vc.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     fourcc = cv2.VideoWriter_fourcc(*'X264')
@@ -120,8 +119,7 @@ def get_show_results(frame_conn, inputQueue):
         _, img = vc.read()
         if img is None:
             break
-        threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
-        frame_conn.send((exit_loop, threshold, img.copy()))
+        frame_conn.send((exit_loop, img.copy()))
         if not inputQueue.empty():
             detections = inputQueue.get()
         if detections is not None:
@@ -148,14 +146,15 @@ def demo_multi(gpu_index=0, cam_index=0):
     parent_conn, child_con = Pipe()
     outputQueue = Queue(maxsize=1)
     threshold = 40
-    p = Process(target=get_show_results, args=(child_con, outputQueue))
+    p = Process(target=get_show_results, args=(threshold, child_con, outputQueue,))
     p.daemon = True
     p.start()
 
     yolo = PyYoloV2(gpu_index=gpu_index)
     exit_loop = False
     while not exit_loop:
-        exit_loop, threshold, frame = parent_conn.recv()
+        exit_loop, frame = parent_conn.recv()
+        # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         if frame is not None:
             detections = yolo.detect(img=frame, thresh=float(threshold) / 100)
             outputQueue.put(detections)
