@@ -132,7 +132,7 @@ def get_show_results(threshold, frame_conn, inputQueue):
         if key == 27:
             vw.release()
             vc.release()
-            frame_conn.send((True, img.copy()))
+            frame_conn.send((True, None))
             exit_loop = True
 
 
