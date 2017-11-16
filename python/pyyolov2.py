@@ -115,8 +115,9 @@ def get_show_results(threshold, frame_conn, inputQueue):
     exit_loop = False
     while True:
         _, img = vc.read()
-        if img is not None:
-            frame_conn.send((exit_loop, img.copy()))
+        if img is None:
+            break
+        frame_conn.send((exit_loop, img.copy()))
         if not inputQueue.empty():
             detections = inputQueue.get()
         if detections is not None:
