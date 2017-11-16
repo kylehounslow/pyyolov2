@@ -147,7 +147,7 @@ def demo_multi(gpu_index=0, cam_index=0):
     parent_conn, child_con = Pipe()
     outputQueue = Queue(maxsize=1)
     threshold = 40
-    p = Process(target=get_show_results, args=(threshold, child_con, outputQueue,))
+    p = Process(target=get_show_results, args=(child_con, outputQueue))
     p.daemon = True
     p.start()
 
