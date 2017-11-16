@@ -101,7 +101,8 @@ def classify_frame(net, inputQueue, outputQueue):
             outputQueue.put(detections)
 
 
-def get_show_results(threshold, frame_conn, inputQueue):
+def get_show_results(frame_conn, inputQueue):
+    threshold = 40
     detections = None
     vc = cv2.VideoCapture()
     vc.open(cam_index)
@@ -119,7 +120,7 @@ def get_show_results(threshold, frame_conn, inputQueue):
         _, img = vc.read()
         if img is None:
             break
-        frame_conn.send((exit_loop, img.copy()))
+        frame_conn.send((exit_loop, threshold, img.copy()))
         if not inputQueue.empty():
             detections = inputQueue.get()
         if detections is not None:
@@ -153,7 +154,7 @@ def demo_multi(gpu_index=0, cam_index=0):
     yolo = PyYoloV2(gpu_index=gpu_index)
     exit_loop = False
     while not exit_loop:
-        exit_loop, frame = parent_conn.recv()
+        exit_loop, threshold, frame = parent_conn.recv()
         # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         if frame is not None:
             detections = yolo.detect(img=frame, thresh=float(threshold) / 100)
