@@ -112,9 +112,10 @@ def get_show_results(threshold, frame_conn, inputQueue):
     vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     vw = cv2.VideoWriter('output.avi', fourcc, 20.0, (1920, 1080))
+    exit_loop = False
     while True:
         _, img = vc.read()
-        frame_conn.send(img.copy())
+        frame_conn.send((exit_loop, img.copy()))
         if not inputQueue.empty():
             detections = inputQueue.get()
         if detections is not None:
@@ -131,7 +132,8 @@ def get_show_results(threshold, frame_conn, inputQueue):
         if key == 27:
             vw.release()
             vc.release()
-            break
+            frame_conn.send((True, img.copy()))
+            exit_loop = True
 
 
 def demo_multi(gpu_index=0, cam_index=0):
@@ -145,8 +147,9 @@ def demo_multi(gpu_index=0, cam_index=0):
     p.start()
 
     yolo = PyYoloV2(gpu_index=gpu_index)
-    while True:
-        frame = parent_conn.recv()
+    exit_loop = False
+    while not exit_loop:
+        exit_loop, frame = parent_conn.recv()
         # threshold = cv2.getTrackbarPos('treshold', 'PYYOLOV2')
         if frame is not None:
             detections = yolo.detect(img=frame, thresh=float(threshold) / 100)
