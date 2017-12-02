@@ -206,5 +206,5 @@ if __name__ == '__main__':
     if len(sys.argv) > 3:
         output_video = sys.argv[3]
         print('argv[3]={}'.format(sys.argv[3]))
-    # demo(gpu_index=gpu_index, cam_index=cam_index)
-    demo_multi(gpu_index=gpu_index, cam_index=cam_index)
+    demo(gpu_index=gpu_index, cam_index=cam_index)
+    # demo_multi(gpu_index=gpu_index, cam_index=cam_index)
